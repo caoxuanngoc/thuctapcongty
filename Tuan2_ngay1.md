@@ -1,4 +1,4 @@
-# **Chủ đề tuần 3**
+# **Chủ đề tuần 2 ngày 1**
 
 - Template and Data Binding
 - Directive

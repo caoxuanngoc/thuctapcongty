@@ -1,455 +1,348 @@
-# **Chủ đề tuần 2 ngày 1**
-- Angular Route
-- CanActive
-- CanDeactivate
+# Chủ đề tuần 1 ngày 2: 
+- Angular Module
+- Angular Component
+- Angular lifecyle hook
 
-## **a. Angular Route**
-Angular Router là module được tích hợp sâu vào Angular, giúp bạn dễ dàng tạo các route cho ứng dụng.
+## a. Angular Module:
+<p>Các ứng dụng Angular là mô-đun và Angular có hệ thống mô-đun riêng được gọi là <b>NgModules</b>. <b>NgModules</b> là các vùng chứa cho một khối mã gắn 
+kết dành riêng cho miền ứng dụng, quy trình làm việc hoặc một tập hợp các khả năng liên quan chặt chẽ. Chúng có thể chứa các Component, Service và các tệp mã khác có phạm vi được xác định bởi <b>NgModule</b> chứa. Họ có thể nhập chức năng được xuất từ các <b>NgModules</b> khác và xuất chức năng đã chọn để sử dụng bởi các <b>NgModules</b> khác.</p>
+ 
+<p>Mỗi ứng dụng Angular có ít nhất một lớp NgModule, <b>the <i>root module</i></b>, được đặt tên theo quy ước và nằm trong một tệp có tên . Bạn khởi chạy ứng dụng của mình bằng cách khởi động root NgModule.<b><code>AppModule app.module.ts</code></b>
 <br>
+Mặc dù một ứng dụng nhỏ có thể chỉ có một NgModule, nhưng hầu hết các ứng dụng đều có nhiều mô-đun tính năng hơn. NgModule gốc cho một ứng dụng được đặt tên như vậy vì nó có thể bao gồm NgModules con trong một hệ thống phân cấp có độ sâu bất kỳ.</p>
 
-Thực hiện nhiệm vụ chính là chuyển trang, thay đổi một số thành phần mà không cần phải tải lại trang
-
-### **a.1 Sử dụng Router trong Angular ta cần:**
--  Khi khởi tạo một ứng dụng có hỗ trợ router với CLI, ta chạy câu lệnh dưới đây:
-```typescript
-    ng new <tên_app> --routing
-```
-- Tại <code>index.html</code> ta cần thêm <code>`<base href="/">`</code>.
-- Cần có một khu vực khai báo Directive:<code>`<router-outlet></router-outlet>`</code> nơi này là phần nội dung cần thay đổi.
-- Cần phải import <code>RouterModule, Routes</code> từ <code>@angular/router</code> vào <code>app.module.ts</code>.
-- Khai báo router root cho ứng dụng: <code>RouterModule.forRoot(array_routes: Routes)</code>
-- Phần tử trong <code>array_routes</code> sẽ là một object bao gồm tối thiểu:
-
-    - <b>path</b>: Khai báo đường dẫn đến một component: VD: 'index', 'home' ...
-
-        - Nếu khai báo <b>path</b>: <code>`'**'`</code> thì nếu không tìm thấy router thì sẽ load ra component tương ứng mà mình định nghĩa cho <b>path</b> này.
-    - **component**: Khai báo component.
-
-<i><b>Ví dụ:</b></i>
-
-- Mình sẽ tạo ra một project mới và đồng thời sẽ tạo ra hai component có tên là <b>HomeComponent, AboutComponent</b>
-
-Đầu tiên ta vào sau để tạo phần header và body (Phần các Component được render ra tương ứng với router của nó)
-
-<b>File app.component.html</b>
+<p>Ngay khi bắt đầu khởi tạo một dự án Angular, chúng ta đã thấy ngay một module mặc định đó là AppModule, hãy cùng xem nó có gì nhé</p>
 
 ```typescript
-<nav class="navbar navbar-default" role="navigation">
-    <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button
-                type="button"
-                class="navbar-toggle"
-                data-toggle="collapse"
-                data-target=".navbar-ex1-collapse"
-            >
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="/index">Home</a></li> <!-- Gọi đến HomeComponent -->
-                <li><a href="/about">About</a></li>  <!-- Gọi đến AboutComponent -->
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div>
-</nav>
-
-<div class="container">
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title"></h3>
-                </div>
-                <div class="panel-body">
-                    <!-- Phần này là phần các component được gọi ra tương ứng với router của nó -->
-                    <router-outlet></router-outlet>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-```
-
-Tiếp theo ta vào file **app.module.ts** khai báo và định nghĩa router cho project.
-
-**File app.module.ts**
-
-```typescript
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { HomeComponent } from './components/home/home.component';
-import { AboutComponent } from './components/about/about.component';
-import { NotFoundComponent } from './not-found/not-found.component';
-
-const appRouter : Routes = [
-    {
-        path : 'index',
-        component: HomeComponent
-    },
-    {
-        path : 'about',
-        component: AboutComponent
-    },
-    {
-        // khi một router nào được gọi mà không có trong phần appRouter thì NotFoundComponent được gọi ra
-        path : '**',  
-        component: NotFoundComponent
-    }
-];
-
+import { BrowserModule } from '@angular/platform-browser';
 @NgModule({
-    declarations: [
-        AppComponent,
-        HomeComponent,
-        AboutComponent,
-        NotFoundComponent
-    ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        RouterModule.forRoot(appRouter)
-    ],
-    providers: [],
-    bootstrap: [AppComponent]
+  imports:      [ BrowserModule ],
+  providers:    [ Logger ],
+  declarations: [ AppComponent ],
+  exports:      [ AppComponent ],
+  bootstrap:    [ AppComponent ]
 })
 export class AppModule { }
 ```
 
-Ở version hiện tại <b>Angular 15.0.2</b> ta sẽ có thể cấu hình router trong file <b>app/app-routing.module.ts</b>.
+- <b>declarations</b>: Dùng để khai báo những thành phần chúng ta sẽ dùng ở trên template (thường chủ yếu là các component, directive và pipe).
+- <b>providers</b>: Dùng để khai báo các service dùng trong toàn bộ các module của con (dù có lazy loading module hay không vẫn available).
+- <b>imports</b>: Nó là một mảng các module cần thiết để được sử dụng trong ứng dụng. Nó cũng có thể được sử dụng bởi các Component trong mảng Declarations. Ví dụ: trong @NgModule, chúng ta thấy BrowserModule và AppRoutingModule được import
+- <b>bootstrap</b>: Định nghĩa component gốc của module
 
-Giả sử bạn muốn tự động chuyển trang khi vào một router nào đó thì ta có thể khai báo như sau:
-
-- <b>path</b>: '<tên_router>'
-- <b>redirectTo</b>: '/tên_router_khác'
-- <b>pathMath</b>: 'full' => cho router biết làm thế nào để khớp một URL đến đường dẫn của router và sẽ xảy ra lỗi nếu không khai báo.
-
-<b>File app.module.ts</b>
+> <b>NOTE</b>: Kể từ version của Angular 6, các service không cần đăng kí ở trong module mà chúng ta có thể sử dụng từ khóa providedIn: ‘root’ để xác định tầm ảnh hưởng của service, khi sử dụng cú pháp này mặc định service có thể sử dụng bất cứ đâu trong app, nó tương ứng với việc service đó được import ngay ở AppModule.
+- Khởi tạo module như thế nào Để tạo ra một module chúng ta có thể tạo thủ công bằng tay, hoặc sử dụng Angular CLI bằng cú pháp:
 
 ```typescript
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { HomeComponent } from './components/home/home.component';
-import { AboutComponent } from './components/about/about.component';
-import { NotFoundComponent } from './not-found/not-found.component';
-
-const appRouter : Routes = [
-    {
-        // khi đường dẫn là '' thì nó sẽ được tự động gọi đến đường dẫn là '/index'
-        path : '',
-        redirectTo : '/index',
-        pathMatch : 'full'
-    },
-    {
-        path : 'index',
-        component: HomeComponent
-    },
-    {
-        path : 'about',
-        component: AboutComponent
-    },
-    {
-        path : '**',
-        component: NotFoundComponent
-    }
-];
-
-@NgModule({
-    declarations: [
-        AppComponent,
-        HomeComponent,
-        AboutComponent,
-        NotFoundComponent
-    ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        RouterModule.forRoot(appRouter)
-    ],
-    providers: [],
-    bootstrap: [AppComponent]
-})
-export class AppModule { }
+ng generate module <ModuleName> | ng g m <ModuleName>
+EX: ng generate module Teacher
 ```
 
-Ở trên thì mình đang dùng <code>`href="index"`</code> nên là khi click vào đó thì trang sẽ bị tải lại, để khắc phục điều đó ta sẽ:
+- <b>Feature Module</b>: Gom các component hoặc service có liên quan đến nhau hoặc cùng nằm trong một feature nào đó thành một nhóm.
 
-- sử dụng <code>``[routerLink]="[/tên_router', params]"</code> Vd: <code>`[routerLink]="[/home', 1]"`</code> => '/home/1'
-
-<i><b>Ví dụ:</b></i>
-
-Ta vào file **app.component.html** thay <code>`href="/index"`</code> bằng <code>`[routerLink]="['/index']"`</code> xem sao
-
-<b>File app.component.html</b>
-
-```typescript
-........
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a [routerLink]="['/index']">Home</a></li>
-                <li><a [routerLink]="['/about']">About</a></li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div>
-</nav>
-........
-```
-
-Nếu bạn muốn thêm class **active** (hoặc thêm class_name khác) nếu router hiện tại trùng với router khai báo:
-
-```typescript
-- `routerLinkActive='active'` (có thể thay thế active bằng một tên khác hoặc sử dụng nhiều class cùng một lúc 'active active1 active2')
-```
-
-<b>File app.component.html</b>
-
-```typescript
-........
- <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-            <li routerLinkActive="active">
-                <a [routerLink]="['/index']">Home</a>
-            </li>
-            <li routerLinkActive="active">
-                <a [routerLink]="['/about']">About</a>
-            </li>
-        </ul>
-</div>
-........
-
-```
-
-### **a.2 Chuyển trang bằng even binding:**
-Giả sử giờ mình sẽ không gọi trực tiếp đường dẫn ở các thẻ mà mình sẽ gọi nó thông qua một sự kiện nào đó
-
-- Cần import Router từ <code>@angular/router</code>
-- Sử dụng **navigate**: <code>.navigate(['tên_router', param])</code>.
-- hoặc sử dụng **navigateByUrl('tên_router')**
-
-<i><b>Ví dụ:</b></i>
-
-Ở file **app.component.html** mình tạo ra thêm hai button và cho nó sự kiện click
-
-<b>File app.component.html</b>
-
-```typescript
-........
-
-<div class="container">
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title"></h3>
-                </div>
-                <div class="panel-body">
-                    <!-- Phần này là phần các component được gọi ra tương ứng với router của nó -->
-                    <router-outlet></router-outlet>
-                </div>
-            </div>
-        </div>
-    </div>
+<br>Có những loại module nào?
+- modules of pages.
+- modules of global services.
+- modules of reusable components.
+<div align="center">
+  <img src="https://images.viblo.asia/2149bd31-9b53-40bc-b404-26b49dab7224.jpg">
 </div>
 
-<button type="button" class="btn btn-primary" (click)="navigate('index')">Home</button>
-<button type="button" class="btn btn-success" (click)="navigate('about')">About</button>
+- Việc tách ra các module có một tầm ảnh hưởng rất lớn đến việc phát triển một dự án angular nếu phân chia nó hợp lý và khoa học, một dự án sẽ phát triển dễ dàng, dễ bảo trì, dễ tiếp cận. Khi khỏi tạo một dự án hãy xem xét kĩ, và nên tạo ra một rule thống nhất trong quá trình phát triển để khi mỗi người tạo một module hay thêm những component sẽ không làm phá vỡ các quy tắc mọi người đang làm.
+
+## b. Angular Component
+<p>Một thành phần điều khiển một mảng màn hình được gọi là chế độ xem. Nó bao gồm của lớp TypeScript, mẫu HTML và biểu định kiểu CSS. Lớp TypeScript định nghĩa tương tác của mẫu HTML và cấu trúc DOM được kết xuất, trong khi biểu định kiểu mô tả giao diện của nó.</p>
+- Khởi tạo 1 component bằng Angular CLI:
+
+```typescript
+ng generate component <ComponentName> | ng g c <ComponentName>
+EX: ng g c DetailPage
 ```
 
-<b>File app.component.ts</b>
+Chú ý bạn có thể thêm:
+- Option <b>-t</b> nếu không muốn tạo ra file html. Sử dụng template ngay trong component
+- Option <b>--inline-style</b> nếu không muốn tạo ra file style. Sử dụng style ngay trong component
+- Option <b>--skipTests</b> nếu không muốn tạo ra file Test(spec.ts) trong component
+<br>
+- Mặc định ngay khi khởi tạo 1 ứng dụng Angular bằng Angular CLI thì ta sẽ có sắn 1 Component là <b>App Component</b> trong thư mục <b>src/app</b>
 
 ```typescript
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
+    // Khai báo selector cho component, có thể gọi đến selector này giống như thẻ html (<app-root></app-root>)
     selector: 'app-root',
+    // Khai báo file html mà component "đại diện" (hay còn gọi là view/template của Component)
     templateUrl: './app.component.html',
+    // Khai báo file style mà component này sẽ sử dụng
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    title = 'Router';
-
-    constructor(
-        public routerService : Router
-    ) {}
-
-    navigate(url : string) {
-        // this.routerService.navigate([url]);
-        this.routerService.navigateByUrl(url);
-    }
+    title = 'app';
 }
+
 ```
 
-### **a.3 Lấy tham số trên router:**
+- AppComponent là thành phần cha của ứng dụng. Tất cả các thành phần mới tạo ra sau này đều là thành phần con của AppComponent.
 
-- Để lấy được tham số trên router ta sử dụng ActivateRoute từ <code>@angular/router</code>.
-- Cú pháp: <code>.snapshot.params['tên_param_khai_báo_trong_router']</code> Ví dụ: '/home/:id' => 'id'.
+## c. Angular lifecyle hook
+<p>Một <b>LifeCycle</b> của <b>Component</b> bắt đầu khi Angular khởi tạo <b>class Component</b> và hiển thị dạng xem thành phần cùng với các chế độ xem con của nó. <b>LifeCycle</b> tiếp tục với tính năng phát hiện thay đổi, khi Angular kiểm tra xem khi nào các thuộc tính ràng buộc dữ liệu thay đổi và cập nhật cả chế độ xem và phiên bản thành phần nếu cần. <b>LifeCycle</b> kết thúc khi Angular phá hủy Component và xóa mẫu đã kết xuất khỏi DOM. Các lệnh có vòng đời tương tự, vì Angular tạo, cập nhật và phá hủy các phiên bản trong quá trình thực thi.</p>
+ <p>Ứng dụng của bạn có thể sử dụng các phương thức móc vòng đời(<b>LifeCycle Hook Method</b>) để khai thác các sự kiện chính trong vòng đời của một cấu phần hoặc lệnh nhằm khởi tạo các phiên bản mới, bắt đầu phát hiện thay đổi khi cần, phản hồi các bản cập nhật trong quá trình phát hiện thay đổi và dọn dẹp trước khi xóa phiên bản.</p>
+ <p>Một vòng đời của Component sẽ có thứ tự như sau: OnChanges => OnInit => DoCheck => AfterContentInit => AfterContentChecked => AfterViewInit => AfterViewChecked => OnDestroy.</p>
+ <div align="center">
+  <img src="https://images.viblo.asia/3e8bca05-06d1-4999-98a6-628bd57a7c21.png">
+</div>
 
-<b>Ví dụ</b> ở file <b>app.module.ts</b> mình khai báo thêm một router
-
-<b>File app.module.ts</b>
-
-```typescript
-........
-const appRouter : Routes = [
-    {
-        path: '',
-        redirectTo: '/index',
-        pathMatch: 'full'
-    },
-    {
-        path: 'index',
-        component: HomeComponent
-    },
-    {
-        path: 'about',
-        component: AboutComponent
-    },
-    {
-        path: 'products/:id', // khai báo router này để lấy id từ trên router
-        component: ProductDetailComponent
-    },
-    {
-        path: '**',
-        component: NotFoundComponent
-    }
-];
-........
-```
-
-Ở file <code>product-detail.component.html</code> mình sẽ hiển thị id mà mình lấy được.
-```typescript
-<h1>Param {{ id ? id : ''}}</h1>
-```
-
-Ở file <code>product-detail.component.ts</code> mình sẽ lấy id từ trên router sau đó mình sẽ truyền qua cho <code>product-detail.component.html</code> để hiển thị lên.
-
-```typescript
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-
-@Component({
-    selector: 'app-product-detail',
-    templateUrl: './product-detail.component.html',
-    styleUrls: ['./product-detail.component.css']
-})
-export class ProductDetailComponent implements OnInit {
-    public id : number = 0;
-
-    constructor(
-        public activatedRoute : ActivatedRoute
-    ) { }
-
-    ngOnInit(): void {
-        this.id = this.activatedRoute.snapshot.params['id'];
-    }
-}
-```
-
+#### Các Menthod và chức năng của từng Method
+**1. <code>ngOnChanges()</code>**
+- Phản hồi khi Angular đặt hoặc đặt lại các thuộc tính đầu vào liên kết dữ liệu. Phương thức nhận một <code>SimpleChanges</code> đối tượng có giá trị thuộc tính hiện tại và trước đó.
+> NOTE: Điều này xảy ra thường xuyên, do đó, bất kỳ thao tác nào bạn thực hiện ở đây đều ảnh hưởng đáng kể đến hiệu suất.
 <br>
 
-## **b. CanActive**
-- Là 1 trong 1 loại Angular Guard được sử dụng để bảo vệ router của mình.
-- Trong một ứng dụng web, chúng ta thường đối mặt với kịch bản một số page cho phép tất cả mọi người truy cập, ngược lại 1 soos khác chỉ dành cho user login or admin chẳng hạn
-- **Quyết định việc một router được kích hoạt**
-- Để được cấu trúc khai báo và cách hoạt động đầu tiên ta cần tìm hiểu Guard là gì:
+- Được gọi trước <code>ngOnInit()</code> (nếu thành phần có đầu vào ràng buộc) và bất cứ khi nào một hoặc nhiều thuộc tính đầu vào ràng buộc dữ liệu thay đổi.
+> NOTE: Nếu thành phần của bạn không có đầu vào hoặc bạn sử dụng nó mà không cung cấp bất kỳ đầu vào nào, khung sẽ không gọi ngOnChanges().
 
-### **b.1 Định nghĩa Guard:**
-- Guard có thể được triển khai trong những cách khác nhau, nhưng sau tất cả nó sẽ là function trả về một trong những kiểu sau <code>Observable<boolean>, Promise<boolean> </code> hoặc <code>boolean</code>.
-- Guard có 4 type:
-
-    - <b>CanActivate:</b> Quyết định việc một route được kích hoạt.
-    - <b>CanActivateChild:</b> Quyết định việc children routes được kích hoạt.
-    - <b>CanDeactivate:</b> Quyết định việc route hủy kích hoạt.
-    - <b>CanLoad:</b> Quyết định một module được Lazy Loading
-    
-- Phụ thuộc ta muốn làm gì mà triển khai 1 số Guard nhất định.
-
-#### **b.1.1 Kiểu function**
-- Để đăng ký một guard chúng ta cần định nghĩa một token và guard function. Dưới dây là một định nghĩa cực kì đơn giản cho guard:
-
-**File app.module.ts**
+- Code Example:
 
 ```typescript
-@NgModule({
-    ...
-    providers: [
-        provide: 'CanActiveGuard',
-        useValue: () => {
-            return true;
-        }
-    ],
-    ...
+import { Component, Input, OnChanges } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  template: `
+  <h3>Child Component</h3>
+  <p>TICKS: {{ lifecycleTicks }}</p>
+  <p>DATA: {{ data }}</p>
+  `
 })
-export class AppModule {}
-```
+export class ChildComponent implements OnChanges {
+  @Input() data: string;
+  lifecycleTicks: number = 0;
 
-- Ở trên là định nghĩa một guard mà luôn trả về true, vì vậy chúng ta có thể include nó tới providers của AppModule luôn. Khi đã cấu hình nó trong AppModule chúng ta có thể sử dụng guard trong route config. Cấu hình route bên dưới có CanActivateGuard được đính kèm:
-
-**File app-routing.module.ts**
-
-```typescript
-export const AppRoutes:RouterConfig = [
-  { 
-    path: '',
-    component: SomeComponent,
-    canActivate: ['CanActivateGuard']
+  ngOnChanges() {
+    this.lifecycleTicks++;
   }
-];
-```
+}
 
-- Như chúng ta có thể thấy, việc chúng ta cần làm là định nghĩa các guard tokens được gọi đến. Điều này cũng có nghĩa là chúng có thể triển khai nhiều guards để bảo vệ một route. Guards được thực thi theo thứ tự mà chúng được khai báo trên route.
+@Component({
+  selector: 'app-parent',
+  template: `
+  <h1>ngOnChanges Example</h1>
+  <app-child [data]="arbitraryData"></app-child>
+  `
+})
+export class ParentComponent {
+  arbitraryData: string = 'initial';
 
-[**Link Tham Khảo**](https://viblo.asia/p/bao-ve-routes-su-dung-guards-trong-angular-3Q75wWX35Wb)
-
-
-## **b. CanDeactivate**
-- Bây giờ chúng ta có thể thấy làm thế nào để <code>CanActivate</code> làm việc trong những kịch bản khác nhau, nhưng như đã đề cập trước đó, chúng ta có thêm một số guard interfaces có thể tận dụng. <code>CanDeactivate</code> cho chúng ta lựa chọn để quyết định rời route hay không. Điều này rất hữa dụng nếu chúng ta muốn ngăn chặn người dùng làm mất những thay đổi chưa được save khi điền dữ liệu vào form và không may click trên button cancel.
-
-- Việc implement một <code>CanDeactivate</code> guard là rất tương tụ với <code>CanActivate</code>. Tất cả những thứ cần làm là chúng ta tạo lại hoặc một function, hoặc một class cái mà implement <code>CanDeactive</code> interface. Chúng ta có thể implement đơn giản như bên dưới:
-
-**File confimdeactivateguard.guard.ts**
-```typescript
-import { CanDeactivate } from '@angular/router';
-import { CanDeactivateComponent } from './app/can-deactivate';
-
-export class ConfirmDeactivateGuard implements CanDeactivate<CanDeactivateComponent> {
-
-  canDeactivate(target: CanDeactivateComponent) {
-    if(target.hasChanges()){
-        return window.confirm('Do you really want to cancel?');
-    }
-    return true;
+  constructor() {
+    setTimeout(() => {
+      this.arbitraryData = 'final';
+    }, 5000);
   }
 }
 ```
 
-- Khai báo nó trong AppModule
+- Tóm tắt: ParentComponent liên kết dữ liệu đầu vào với ChildComponent. Thành phần nhận dữ liệu này thông qua thuộc tính của nó <code>@Input</code>.<code>ngOnChanges</code> được thực thi. Sau năm giây, <code>setTimeout</code> gọi lại sẽ kích hoạt. ParentComponent thay đổi nguồn dữ liệu của thuộc tính đầu vào của ChildComponent. Dữ liệu mới chảy qua thuộc tính đầu vào.<code>ngOnChanges</code> được gọi 1 lần nữa.
+
+**2. <code>ngOnInit()</code>**
+- Khởi tạo <code>Directive</code> hoặc <code>Component</code> sau khi Angular lần đầu tiên hiển thị các thuộc tính liên kết dữ liệu và đặt các thuộc tính đầu vào của <code>Directive</code> hoặc <code>Component</code>.
+- Được gọi một lần, sau lần gọi <code>ngOnChanges()</code> đầu tiên. <code>ngOnInit()</code> vẫn được gọi ngay cả khi <code>ngOnChanges()</code> không được gọi tới (đó là trường hợp không có đầu vào giới hạn mẫu).
+- Code Example:
 
 ```typescript
-@NgModule({
-  ...
-  providers: [
-    ...
-    ConfirmDeactivateGuard
-  ]
+import { Component, Input, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  template: `
+  <h3>Child Component</h3>
+  <p>TICKS: {{ lifecycleTicks }}</p>
+  <p>DATA: {{ data }}</p>
+  `
 })
-export class AppModule {}
+export class ChildComponent implements OnInit {
+  @Input() data: string;
+  lifecycleTicks: number = 0;
+
+  ngOnInit() {
+    this.lifecycleTicks++;
+  }
+}
+
+@Component({
+  selector: 'app-parent',
+  template: `
+  <h1>ngOnInit Example</h1>
+  <app-child [data]="arbitraryData"></app-child>
+  `
+})
+export class ParentComponent {
+  arbitraryData: string = 'initial';
+
+  constructor() {
+    setTimeout(() => {
+      this.arbitraryData = 'final';
+    }, 5000);
+  }
+}
 ```
+
+- Tóm tắt: ParentComponent liên kết dữ liệu đầu vào với ChildComponent. Thành phần nhận dữ liệu này thông qua thuộc tính của nó <code>@Input</code>.<code>ngOnInit</code> được thực thi. Sau năm giây, <code>setTimeout</code> gọi lại sẽ kích hoạt. ParentComponent thay đổi nguồn dữ liệu của thuộc tính đầu vào của ChildComponent. Dữ liệu mới chảy qua thuộc tính đầu vào.<code>ngOnChanges</code> không được gọi lại nữa.
+
+**3. <code>ngDoCheck()</code>**
+- Phát hiện và hành động theo những thay đổi mà Angular không thể hoặc sẽ không tự phát hiện.
+- Được gọi ngay sau <code>ngOnChanges()</code> mỗi lần chạy phát hiện thay đổi và ngay sau lần chạy <code>ngOnInit()</code> đầu tiên.
+- Code Example:
+
+```typescript
+import { Component, DoCheck, ChangeDetectorRef } from '@angular/core';
+
+@Component({
+  selector: 'app-example',
+  template: `
+  <h1>ngDoCheck Example</h1>
+  <p>DATA: {{ data[data.length - 1] }}</p>
+  `
+})
+export class ExampleComponent implements DoCheck {
+  lifecycleTicks: number = 0;
+  oldTheData: string;
+  data: string[] = ['initial'];
+
+  constructor(private changeDetector: ChangeDetectorRef) {
+    this.changeDetector.detach(); // lets the class perform its own change detection
+
+    setTimeout(() => {
+      this.oldTheData = 'final'; // intentional error
+      this.data.push('intermediate');
+    }, 3000);
+
+    setTimeout(() => {
+      this.data.push('final');
+      this.changeDetector.markForCheck();
+    }, 6000);
+  }
+
+  ngDoCheck() {
+    console.log(++this.lifecycleTicks);
+
+    if (this.data[this.data.length - 1] !== this.oldTheData) {
+      this.changeDetector.detectChanges();
+    }
+  }
+}
+```
+
+- Tóm tắt: Lớp khởi tạo sau hai vòng phát hiện thay đổi. Trình tạo lớp bắt đầu <code>setTimeout</code> hai lần. Sau ba giây,<code>setTimeout</code> phát hiện thay đổi trình kích hoạt đầu tiên. <code>ngDoCheck</code> đánh dấu màn hình để cập nhật. Ba giây sau, <code>setTimeout</code> phát hiện thay đổi kích hoạt lần thứ hai. Không cần cập nhật chế độ xem theo đánh giá của <code>ngDoCheck</code>.
+
+**4. <code>ngAfterContentInit()</code>**
+- Phản hồi sau khi Angular chiếu nội dung bên ngoài vào <code>View</code> của <code>Component</code>hoặc vào <code>View</code> của <code>Directive</code>.
+- Được gọi một lần sau lần đầu tiên <code>ngDoCheck()</code> thực thi.
+- <code>ngAfterContentInit</code> kích hoạt sau khi DOM content của <code>Component</code> khởi tạo(tải lần đầu tiên). Chờ <code>@ContentChild(ren)</code> truy vấn là trường hợp sử dụng chính của hook. <code>@ContentChild(ren)</code> truy vấn mang lại tham chiếu phần tử cho nội dung DOM. Như vậy, chúng không khả dụng cho đến sau khi tải nội dung DOM. Do đó tại sao <code>ngAfterContentInit</code> và đối tác của nó <code>ngAfterContentChecked</code> được sử dụng.
+
+```typescript
+import { Component, ContentChild, AfterContentInit, ElementRef, Renderer2 } from '@angular/core';
+
+@Component({
+  selector: 'app-c',
+  template: `
+  <p>I am C.</p>
+  <p>Hello World!</p>
+  `
+})
+export class CComponent { }
+
+@Component({
+  selector: 'app-b',
+  template: `
+  <p>I am B.</p>
+  <ng-content></ng-content>
+  `
+})
+export class BComponent implements AfterContentInit {
+  @ContentChild("BHeader", { read: ElementRef }) hRef: ElementRef;
+  @ContentChild(CComponent, { read: ElementRef }) cRef: ElementRef;
+
+  constructor(private renderer: Renderer2) { }
+
+  ngAfterContentInit() {
+    this.renderer.setStyle(this.hRef.nativeElement, 'background-color', 'yellow')
+
+    this.renderer.setStyle(this.cRef.nativeElement.children.item(0), 'background-color', 'pink');
+    this.renderer.setStyle(this.cRef.nativeElement.children.item(1), 'background-color', 'red');
+  }
+}
+
+@Component({
+  selector: 'app-a',
+  template: `
+  <h1>ngAfterContentInit Example</h1>
+  <p>I am A.</p>
+  <app-b>
+    <h3 #BHeader>BComponent Content DOM</h3>
+    <app-c></app-c>
+  </app-b>
+  `
+})
+export class AComponent { }
+```
+
+**5. <code>ngAfterContentChecked()</code>**
+- Phản hồi sau khi Angular kiểm tra nội dung được chiếu vào <code>Directive</code> và <code>Component</code>.
+- Được gọi sau <code>ngAfterContentInit()</code> và mỗi lần <code>ngDoCheck()</code> được gọi.
+
+```typescript
+import { Component, ContentChild, AfterContentChecked, ElementRef, Renderer2 } from '@angular/core';
+
+@Component({
+  selector: 'app-c',
+  template: `
+  <p>I am C.</p>
+  <p>Hello World!</p>
+  `
+})
+export class CComponent { }
+
+@Component({
+  selector: 'app-b',
+  template: `
+  <p>I am B.</p>
+  <button (click)="$event">CLICK</button>
+  <ng-content></ng-content>
+  `
+})
+export class BComponent implements AfterContentChecked {
+  @ContentChild("BHeader", { read: ElementRef }) hRef: ElementRef;
+  @ContentChild(CComponent, { read: ElementRef }) cRef: ElementRef;
+
+  constructor(private renderer: Renderer2) { }
+
+  randomRGB(): string {
+    return `rgb(${Math.floor(Math.random() * 256)},
+    ${Math.floor(Math.random() * 256)},
+    ${Math.floor(Math.random() * 256)})`;
+  }
+
+  ngAfterContentChecked() {
+    this.renderer.setStyle(this.hRef.nativeElement, 'background-color', this.randomRGB());
+    this.renderer.setStyle(this.cRef.nativeElement.children.item(0), 'background-color', this.randomRGB());
+    this.renderer.setStyle(this.cRef.nativeElement.children.item(1), 'background-color', this.randomRGB());
+  }
+}
+
+@Component({
+  selector: 'app-a',
+  template: `
+  <h1>ngAfterContentChecked Example</h1>
+  <p>I am A.</p>
+  <app-b>
+    <h3 #BHeader>BComponent Content DOM</h3>
+    <app-c></app-c>
+  </app-b>
+  `
+})
+export class AComponent { }
+```
+
+- Tóm tắt: Kết xuất bắt đầu với AComponent. Để hoàn thành, AComponent phải kết xuất BComponent. BComponent dự án nội dung được lồng trong phần tử của nó thông qua<code><ng-content></ng-content></code>phần tử. CComponent là một phần của nội dung dự kiến. Nội dung được chiếu kết thúc hiển thị. BComponent kết thúc kết xuất.<code>ngAfterContentChecked</code> được gọi AComponent kết thúc kết xuất.<code>ngAfterViewChecked</code> có thể kích hoạt lại thông qua phát hiện thay đổi.
