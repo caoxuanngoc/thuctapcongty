@@ -1,7 +1,10 @@
-# **Chủ đề tuần 4**
+# **Chủ đề tuần 2 ngày 2**
 
 - Lazy loading
 - Eager Loading
+- Template and Data Binding
+- Directive
+- Pipe
 
 ## **a. Lazy loading**
 - **Lazy Loading** là một design pattern thường được sử dụng trong lập trình máy tính để trì hoãn lại việc khởi tạo một đối tượng cho đến khi nào nó thực sự cần đến. Nó góp phần giúp cho hoạt động của chương trình được hiệu quả hơn nếu như được sử dụng một cách hợp lý. Nói đơn giản là: "<i>**Không load bất kỳ thứ gì nếu như bạn không cần đến**</i>"
